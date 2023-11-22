@@ -39,16 +39,41 @@ const logger = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-app.get("/", logger, (req: Request, res: Response) => {
-  console.log(req.query);
-  res.send("Hello World!");
-});
+app.get(
+  "/",
+  logger,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send(holaa);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+);
 
 app.post("/", logger, (req: Request, res: Response) => {
   console.log(req.body);
   res.json({
     message: "successfully received data",
   });
+});
+
+app.all("*", (req: Request, res: Response) => {
+  res.status(400).json({
+    success: false,
+    message: "Route is not found",
+  });
+});
+
+// global Error handler
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  if (error) {
+    res.status(400).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
 });
 
 export default app;
