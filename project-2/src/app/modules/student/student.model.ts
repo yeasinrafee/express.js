@@ -7,9 +7,14 @@ import {
 } from "./student.interface";
 
 const userNameSchema = new Schema<UserName>({
-  firstName: { type: String, required: true },
+  firstName: {
+    type: String,
+    required: [true, "First Name is Required"],
+    trim: true,
+    maxlength: [20, "First name can not be more than 20 characters"],
+  },
   middleName: { type: String },
-  lastName: { type: String, required: true },
+  lastName: { type: String, required: [true, "Last name is Required"] },
 });
 
 const guardianSchema = new Schema<Guardian>({
@@ -29,7 +34,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 
 const studentSchema = new Schema<Student>({
-  id: { type: String, required: true },
+  id: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
     required: true,
@@ -37,7 +42,9 @@ const studentSchema = new Schema<Student>({
   gender: {
     type: String,
     enum: {
-      values: ["male", "female"],
+      values: ["male", "female", "others"],
+      message:
+        "{VALUE} is not valid. Gender must be either male or female and others.",
     },
     required: true,
   },
@@ -65,7 +72,7 @@ const studentSchema = new Schema<Student>({
   isActive: {
     type: String,
     enum: ["active", "blocked"],
-    required: true,
+    default: "active",
   },
 });
 
