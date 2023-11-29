@@ -30,10 +30,16 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<Student>({
   id: { type: String, required: true },
-  name: userNameSchema,
+  name: {
+    type: userNameSchema,
+    required: true,
+  },
   gender: {
     type: String,
-    enum: ["male", "female"],
+    enum: {
+      values: ["male", "female"],
+    },
+    required: true,
   },
   dateOfBirth: { type: String },
   email: { type: String, required: true },
@@ -41,13 +47,21 @@ const studentSchema = new Schema<Student>({
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {
     type: String,
-    enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+    enum: {
+      values: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+    },
   },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
+  localGuardian: {
+    type: localGuardianSchema,
+    required: true,
+  },
   profileImg: { type: String },
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
   isActive: {
     type: String,
     enum: ["active", "blocked"],
