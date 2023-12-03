@@ -1,7 +1,10 @@
-import express, { Response, Request, Application } from "express";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import express, { Response, Request, Application, NextFunction } from "express";
 import cors from "cors";
 import { StudentRoutes } from "./app/modules/student/student.route";
 import { UserRouters } from "./app/modules/user/user.route";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 const app: Application = express();
 
 // parsers
@@ -15,5 +18,7 @@ app.use("/api/v1/users", UserRouters);
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
 });
+
+app.use(globalErrorHandler);
 
 export default app;

@@ -6,8 +6,6 @@ import {
   StudentModel,
   TUserName,
 } from "./student.interface";
-import bcrypt from "bcrypt";
-import config from "../../config";
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -53,11 +51,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
       unique: true,
       ref: "User",
-    },
-    password: {
-      type: String,
-      required: [true, "User is required"],
-      maxlength: [20, "Password can not be more than 20 characters"],
     },
     name: {
       type: userNameSchema,
@@ -110,37 +103,18 @@ studentSchema.virtual("fullName").get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
-// pre save middleware /hook
-studentSchema.pre("save", async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds)
-  );
-  next();
-});
-// post save middleware/ hook
-studentSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
-
 // Query Middleware
 studentSchema.pre("find", function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
 studentSchema.pre("findOne", function (next) {
-  // console.log(this);
   this.findOne({ isDeleted: { $ne: true } }); // this will not work on aggregations
   next();
 });
 
 studentSchema.pre("aggregate", function (next) {
-  // console.log(this);
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
@@ -150,12 +124,6 @@ studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-
-// creating a custom instance method
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 // Student Model
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);
