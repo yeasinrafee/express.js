@@ -35,29 +35,32 @@ const localGuardianSchemaZod = z.object({
 });
 
 // Define Zod schema for Student
-const studentSchemaZod = z.object({
-  id: z.string(),
-  password: z.string().max(20),
-  name: userNameSchemaZod,
-  gender: z
-    .enum(["male", "female", "others"])
-    .refine((value) => value !== undefined, {
-      message: "Gender must be either male, female, or others",
+const createStudentSchemaZod = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameSchemaZod,
+      gender: z
+        .enum(["male", "female", "others"])
+        .refine((value) => value !== undefined, {
+          message: "Gender must be either male, female, or others",
+        }),
+      dateOfBirth: z.string().optional(),
+      email: z.string(),
+      contactNumberNo: z.string(),
+      emergencyContactNo: z.string(),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+        .optional(),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      guardian: guardianSchemaZod,
+      localGuardian: localGuardianSchemaZod,
+      profileImg: z.string().optional(),
     }),
-  dateOfBirth: z.string().optional(),
-  email: z.string(),
-  contactNumberNo: z.string(),
-  emergencyContactNo: z.string(),
-  bloodGroup: z
-    .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
-    .optional(),
-  presentAddress: z.string(),
-  permanentAddress: z.string(),
-  guardian: guardianSchemaZod,
-  localGuardian: localGuardianSchemaZod,
-  profileImg: z.string().optional(),
-  isActive: z.enum(["active", "blocked"]).default("active"),
-  isDeleted: z.boolean(),
+  }),
 });
 
-export default studentSchemaZod;
+export const studentValidations = {
+  studentSchemaZod: createStudentSchemaZod,
+};
