@@ -45,7 +45,7 @@ const createStudentSchemaZod = z.object({
         .refine((value) => value !== undefined, {
           message: "Gender must be either male, female, or others",
         }),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       email: z.string(),
       contactNumberNo: z.string(),
       emergencyContactNo: z.string(),
