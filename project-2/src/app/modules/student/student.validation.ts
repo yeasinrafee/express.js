@@ -45,8 +45,8 @@ const createStudentSchemaZod = z.object({
         .refine((value) => value !== undefined, {
           message: "Gender must be either male, female, or others",
         }),
-      dateOfBirth: z.date().optional(),
-      email: z.string(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email(),
       contactNumberNo: z.string(),
       emergencyContactNo: z.string(),
       bloodGroup: z
@@ -57,7 +57,7 @@ const createStudentSchemaZod = z.object({
       guardian: guardianSchemaZod,
       localGuardian: localGuardianSchemaZod,
       admissionSemester: z.string(),
-      profileImg: z.string().optional(),
+      profileImg: z.string(),
     }),
   }),
 });

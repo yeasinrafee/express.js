@@ -39,13 +39,12 @@ academicSemesterSchema.pre("save", async function (next) {
     name: this.name,
   });
   if (isSemesterExists) {
-    throw new Error("Semester already exists");
-  } else {
-    next();
+    throw new Error("Semester is already exists!");
   }
+  next();
 });
 
 export const AcademicSemester = model<TAcademicSemester>(
-  "academicSemester",
+  "AcademicSemester",
   academicSemesterSchema
 );
