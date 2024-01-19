@@ -62,6 +62,34 @@ const createStudentSchemaZod = z.object({
   }),
 });
 
+const updateStudentSchemaZod = z.object({
+  body: z.object({
+    student: z.object({
+      name: userNameSchemaZod.optional(),
+      gender: z
+        .enum(["male", "female", "others"])
+        .refine((value) => value !== undefined, {
+          message: "Gender must be either male, female, or others",
+        })
+        .optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email().optional(),
+      contactNumberNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: guardianSchemaZod.optional(),
+      localGuardian: localGuardianSchemaZod.optional(),
+      admissionSemester: z.string().optional(),
+      profileImg: z.string().optional(),
+    }),
+  }),
+});
+
 export const studentValidations = {
-  studentSchemaZod: createStudentSchemaZod,
+  createStudentSchemaZod,
+  updateStudentSchemaZod,
 };
