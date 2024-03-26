@@ -58,6 +58,7 @@ const createStudentSchemaZod = z.object({
       localGuardian: localGuardianSchemaZod,
       admissionSemester: z.string(),
       profileImg: z.string(),
+      academicDepartment: z.string(),
     }),
   }),
 });
@@ -85,6 +86,7 @@ const updateStudentSchemaZod = z.object({
       localGuardian: localGuardianSchemaZod.optional(),
       admissionSemester: z.string().optional(),
       profileImg: z.string().optional(),
+      academicDepartment: z.string().optional(),
     }),
   }),
 });
