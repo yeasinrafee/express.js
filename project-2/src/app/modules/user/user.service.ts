@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import config from "../../config";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
@@ -24,6 +25,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     payload.admissionSemester
   );
 
+  if (!admissionSemester) {
+    throw new AppError(400, "Admission semester not found");
+  }
+
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -34,7 +39,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     const newUser = await User.create([userData], { session }); // Built in static method
 
     //create a student
-    if (newUser.length) {
+    if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     }
     // set id, _id as user
@@ -44,17 +49,17 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // Create a student (transaction-2)
     const newStudent = await Student.create([payload], { session });
 
-    if (!newStudent) {
+    if (!newStudent.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
     }
 
     await session.commitTransaction();
     await session.endSession();
     return newStudent;
-  } catch (err) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error("Failed to create student");
+    throw new Error(err);
   }
 };
 
