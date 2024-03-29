@@ -104,5 +104,5 @@ facultySchema.statics.isUserExists = async function (id: string) {
   return existingUser;
 };
 
-// Student Model
+// Faculty Model
 export const Faculty = model<TFaculty, FacultyModel>("Faculty", facultySchema);
