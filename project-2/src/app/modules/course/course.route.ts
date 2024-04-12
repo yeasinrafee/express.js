@@ -1,13 +1,13 @@
 import express from "express";
 import checkValidation from "../../middlewares/validateRequest";
-import { CourseVAlidation } from "./course.validation";
+import { CourseValidation } from "./course.validation";
 import { CourseControllers } from "./course.controller";
 
 const router = express.Router();
 
 router.post(
   "/create-course",
-  checkValidation(CourseVAlidation.createCourseVAlidationSchema),
+  checkValidation(CourseValidation.createCourseValidationSchema),
   CourseControllers.createCourse
 );
 
@@ -17,9 +17,15 @@ router.get("/:id", CourseControllers.getSingleCourse);
 
 router.delete("/:id", CourseControllers.deleteCourse);
 
+router.put(
+  "/:courseId/assign-faculties",
+  checkValidation(CourseValidation.assignFacultiesWithCourseValidationSchema),
+  CourseControllers.assignFacultiesWithCourse
+);
+
 router.patch(
   "/:id",
-  checkValidation(CourseVAlidation.updateCourseValidationSchema),
+  checkValidation(CourseValidation.updateCourseValidationSchema),
   CourseControllers.updateCourse
 );
 
