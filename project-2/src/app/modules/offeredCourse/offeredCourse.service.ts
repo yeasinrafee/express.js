@@ -128,7 +128,13 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-const getSingleOfferedCourseFromDB = async (id: string) => {};
+const getSingleOfferedCourseFromDB = async (id: string) => {
+  const offeredCourse = await OfferedCourse.findById(id);
+  if (!offeredCourse) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered course not found!');
+  }
+  return offeredCourse;
+};
 
 const updateOfferedCourseIntoDB = async (
   id: string,
