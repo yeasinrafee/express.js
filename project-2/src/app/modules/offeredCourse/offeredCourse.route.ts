@@ -18,7 +18,7 @@ router.patch(
 
 // router.delete('/:id', OfferedCourseController);
 
-// router.get('/', OfferedCourseController);
+router.get('/', OfferedCourseController.getAllOfferedCourses);
 
 // router.get('/:id', OfferedCourseController);
 
