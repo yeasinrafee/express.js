@@ -16,7 +16,7 @@ router.patch(
   OfferedCourseController.updateOfferedCourse
 );
 
-// router.delete('/:id', OfferedCourseController);
+router.delete('/:id', OfferedCourseController.deleteOfferedCourseFromDB);
 
 router.get('/', OfferedCourseController.getAllOfferedCourses);
 
