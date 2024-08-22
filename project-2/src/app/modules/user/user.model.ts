@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
-import { TUser } from "./user.interface";
-import config from "../../config";
-import bcrypt from "bcrypt";
+import { Schema, model } from 'mongoose';
+import { TUser, UserModel } from './user.interface';
+import config from '../../config';
+import bcrypt from 'bcrypt';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -20,12 +20,12 @@ const userSchema = new Schema<TUser>(
     },
     role: {
       type: String,
-      enum: ["admin", "student", "faculty"],
+      enum: ['admin', 'student', 'faculty'],
     },
     status: {
       type: String,
-      enum: ["in-progress", "blocked"],
-      default: "in-progress",
+      enum: ['in-progress', 'blocked'],
+      default: 'in-progress',
     },
     isDeleted: {
       type: Boolean,
@@ -38,7 +38,7 @@ const userSchema = new Schema<TUser>(
 );
 
 // pre save middleware /hook
-userSchema.pre("save", async function (next) {
+userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   user.password = await bcrypt.hash(
@@ -48,10 +48,21 @@ userSchema.pre("save", async function (next) {
   next();
 });
 // set empty string after setting password
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
   next();
 });
 
+userSchema.statics.isUserExistByCustomId = async function (id: string) {
+  return await User.findOne({ id });
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
 // User model
-export const User = model<TUser>("User", userSchema);
+export const User = model<TUser, UserModel>('User', userSchema);
