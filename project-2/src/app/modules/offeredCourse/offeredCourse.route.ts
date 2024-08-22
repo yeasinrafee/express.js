@@ -10,11 +10,11 @@ router.post(
   OfferedCourseController.createOfferedCourse
 );
 
-// router.patch(
-//   '/:id',
-//   checkValidation(OfferedCourseValidations.updateOfferedCourseValidationSchema),
-//   OfferedCourseController
-// );
+router.patch(
+  '/:id',
+  checkValidation(OfferedCourseValidations.updateOfferedCourseValidationSchema),
+  OfferedCourseController.updateOfferedCourse
+);
 
 // router.delete('/:id', OfferedCourseController);
 
