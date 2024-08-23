@@ -1,8 +1,9 @@
-import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
+import jwt from 'jsonwebtoken';
+import config from '../../config';
 
 const loginUser = async (payload: TLoginUser) => {
   const user = await User.isUserExistByCustomId(payload.id);
@@ -29,6 +30,20 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   // Access Granted: Send AccessToken and RefreshToken
+
+  const jwtPayload = {
+    userId: user,
+    role: user.role,
+  };
+  // create token and sent to the client
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+    expiresIn: '10d',
+  });
+
+  return {
+    accessToken,
+    needsPasswordChange: user?.needsPasswordChange,
+  };
 };
 
 export const AuthService = {
