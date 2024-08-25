@@ -32,7 +32,7 @@ const loginUser = async (payload: TLoginUser) => {
   // Access Granted: Send AccessToken and RefreshToken
 
   const jwtPayload = {
-    userId: user,
+    userId: user.id,
     role: user.role,
   };
   // create token and sent to the client
