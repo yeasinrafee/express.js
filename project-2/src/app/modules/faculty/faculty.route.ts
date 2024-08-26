@@ -9,7 +9,11 @@ const router = express.Router();
 
 // it'll call controller
 
-router.get('/', auth(USER_ROLE.admin), FacultyController.getAllFaculties);
+router.get(
+  '/',
+  auth(USER_ROLE.admin, USER_ROLE.faculty),
+  FacultyController.getAllFaculties
+);
 router.get('/:id', FacultyController.getSingleFaculty);
 router.patch(
   '/:id',
