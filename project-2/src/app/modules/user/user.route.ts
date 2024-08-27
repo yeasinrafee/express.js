@@ -28,4 +28,6 @@ router.post(
   checkValidation(AdminValidations.createAdminSchemaZod),
   UserController.createAdmin
 );
+
+router.get('/me', auth('student', 'faculty', 'admin'), UserController.getMe);
 export const UserRouters = router;
