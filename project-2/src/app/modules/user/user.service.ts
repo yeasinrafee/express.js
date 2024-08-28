@@ -17,9 +17,13 @@ import { Faculty } from '../faculty/faculty.model';
 import { TFaculty } from '../faculty/faculty.interface';
 import { TAdmin } from '../admin/admin.interface';
 import { Admin } from '../admin/admin.model';
-import { verifyToken } from '../Auth/auth.utils';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: TStudent
+) => {
   //create a user object
   const userData: Partial<TUser> = {};
 
@@ -47,6 +51,11 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     //set generated id
     userData.id = await generateStudentId(admissionSemester);
 
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    // send image to cloudinary
+    const { secure_url } = sendImageToCloudinary(imageName, path);
+
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }); // Built in static method
 
@@ -57,6 +66,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // set id, _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference id
+    payload.profileImg = secure_url;
 
     // Create a student (transaction-2)
     const newStudent = await Student.create([payload], { session });
@@ -84,18 +94,8 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
   //set student role
   userData.role = 'faculty';
-
   //set faculty email
   userData.email = payload.email;
-
-  //find academic semesters info
-  // const admissionSemester = await AcademicSemester.findById(
-  //   payload.admissionSemester
-  // );
-
-  // if (!admissionSemester) {
-  //   throw new AppError(400, "Admission semester not found");
-  // }
 
   const session = await mongoose.startSession();
   try {
@@ -179,8 +179,6 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 };
 
 const getMe = async (userId: string, role: string) => {
-  // const decoded = verifyToken(token, config.jwt_access_secret as string);
-  // const { userId, role } = decoded;
   let result = null;
   if (role === 'student') {
     result = await Student.findOne({ id: userId }).populate('user');

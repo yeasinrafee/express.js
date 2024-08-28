@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 // Define Zod schema for UserName
 const userNameSchemaZod = z.object({
@@ -9,7 +9,7 @@ const userNameSchemaZod = z.object({
     .refine(
       (value) => value.charAt(0).toUpperCase() + value.slice(1) === value,
       {
-        message: "First name must be in capitalized format",
+        message: 'First name must be in capitalized format',
       }
     ),
   middleName: z.string(),
@@ -37,20 +37,20 @@ const localGuardianSchemaZod = z.object({
 // Define Zod schema for Student
 const createStudentSchemaZod = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string().max(20).optional(),
     student: z.object({
       name: userNameSchemaZod,
       gender: z
-        .enum(["male", "female", "others"])
+        .enum(['male', 'female', 'others'])
         .refine((value) => value !== undefined, {
-          message: "Gender must be either male, female, or others",
+          message: 'Gender must be either male, female, or others',
         }),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
       contactNumberNo: z.string(),
       emergencyContactNo: z.string(),
       bloodGroup: z
-        .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+        .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
         .optional(),
       presentAddress: z.string(),
       permanentAddress: z.string(),
@@ -68,9 +68,9 @@ const updateStudentSchemaZod = z.object({
     student: z.object({
       name: userNameSchemaZod.optional(),
       gender: z
-        .enum(["male", "female", "others"])
+        .enum(['male', 'female', 'others'])
         .refine((value) => value !== undefined, {
-          message: "Gender must be either male, female, or others",
+          message: 'Gender must be either male, female, or others',
         })
         .optional(),
       dateOfBirth: z.string().optional(),
@@ -78,7 +78,7 @@ const updateStudentSchemaZod = z.object({
       contactNumberNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),
       bloodGroup: z
-        .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+        .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
         .optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
