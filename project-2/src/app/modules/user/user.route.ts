@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { UserController } from './user.controller';
 import { studentValidations } from '../student/student.validation';
 import checkValidation from '../../middlewares/validateRequest';
@@ -13,8 +13,12 @@ const router = express.Router();
 
 router.post(
   '/create-student',
-  auth(USER_ROLE.admin),
+  // auth(USER_ROLE.admin),
   upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   checkValidation(studentValidations.createStudentSchemaZod),
   UserController.createStudent
 );
@@ -22,12 +26,22 @@ router.post(
 router.post(
   '/create-faculty',
   auth(USER_ROLE.admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   checkValidation(FacultyValidations.createFacultySchemaZod),
   UserController.createFaculty
 );
 
 router.post(
   '/create-admin',
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   checkValidation(AdminValidations.createAdminSchemaZod),
   UserController.createAdmin
 );

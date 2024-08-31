@@ -47,7 +47,7 @@ const createStudentSchemaZod = z.object({
         }),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
-      contactNumberNo: z.string(),
+      contactNo: z.string(),
       emergencyContactNo: z.string(),
       bloodGroup: z
         .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
@@ -57,7 +57,7 @@ const createStudentSchemaZod = z.object({
       guardian: guardianSchemaZod,
       localGuardian: localGuardianSchemaZod,
       admissionSemester: z.string(),
-      profileImg: z.string(),
+      // profileImg: z.string(),
       academicDepartment: z.string(),
     }),
   }),
