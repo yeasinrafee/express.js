@@ -13,20 +13,19 @@ export const sendImageToCloudinary = (imageName: string, path: string) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       path,
-      { public_id: imageName },
-      (error, result) => {
+      { public_id: imageName.trim() },
+      function (error, result) {
         if (error) {
           reject(error);
-        } else {
-          resolve(result as UploadApiResponse);
-          fs.unlink(path, (err) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log('File is deleted!');
-            }
-          });
         }
+        resolve(result);
+        fs.unlink(path, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('File is deleted!');
+          }
+        });
       }
     );
   });
