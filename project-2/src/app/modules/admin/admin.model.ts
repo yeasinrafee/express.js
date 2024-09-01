@@ -1,30 +1,30 @@
-import { Schema, model } from "mongoose";
-import { AdminModel, TAdmin, TUserName } from "./admin.interface";
+import { Schema, model } from 'mongoose';
+import { AdminModel, TAdmin, TUserName } from './admin.interface';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
-    required: [true, "First Name is Required"],
+    required: [true, 'First Name is Required'],
     trim: true,
-    maxlength: [20, "First name can not be more than 20 characters"],
+    maxlength: [20, 'First name can not be more than 20 characters'],
   },
   middleName: { type: String, trim: true },
   lastName: {
     type: String,
     trim: true,
-    required: [true, "Last Name is required"],
-    maxlength: [20, "Name can not be more than 20 characters"],
+    required: [true, 'Last Name is required'],
+    maxlength: [20, 'Name can not be more than 20 characters'],
   },
 });
 
 const adminSchema = new Schema<TAdmin, AdminModel>(
   {
-    id: { type: String, required: [true, "Id is required"], unique: true },
+    id: { type: String, required: [true, 'Id is required'], unique: true },
     user: {
       type: Schema.Types.ObjectId,
-      required: [true, "User is required"],
+      required: [true, 'User is required'],
       unique: true,
-      ref: "User",
+      ref: 'User',
     },
     name: {
       type: userNameSchema,
@@ -33,11 +33,11 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     gender: {
       type: String,
       enum: {
-        values: ["male", "female", "other"],
+        values: ['male', 'female', 'other'],
         message:
-          "{VALUE} is not valid. Gender must be either male or female and others.",
+          '{VALUE} is not valid. Gender must be either male or female and others.',
       },
-      required: [true, "Gender is required"],
+      required: [true, 'Gender is required'],
     },
     dateOfBirth: { type: Date },
     email: { type: String, required: true, unique: true },
@@ -46,8 +46,8 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     bloodGroup: {
       type: String,
       enum: {
-        values: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
-        message: "{VALUE} is not a valid blood group",
+        values: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+        message: '{VALUE} is not a valid blood group',
       },
     },
     presentAddress: { type: String, required: true },
@@ -56,7 +56,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
       type: String,
       required: true,
     },
-    profileImg: { type: String },
+    profileImg: { type: String, default: '' },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -70,22 +70,22 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
 );
 
 // virtual
-adminSchema.virtual("fullName").get(function () {
+adminSchema.virtual('fullName').get(function () {
   return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 // Query Middleware
-adminSchema.pre("find", function (next) {
+adminSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-adminSchema.pre("findOne", function (next) {
+adminSchema.pre('findOne', function (next) {
   this.findOne({ isDeleted: { $ne: true } }); // this will not work on aggregations
   next();
 });
 
-adminSchema.pre("aggregate", function (next) {
+adminSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
@@ -97,4 +97,4 @@ adminSchema.statics.isUserExists = async function (id: string) {
 };
 
 // Faculty Model
-export const Admin = model<TAdmin, AdminModel>("Admin", adminSchema);
+export const Admin = model<TAdmin, AdminModel>('Admin', adminSchema);
