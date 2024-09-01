@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { FacultyModel, TFaculty, TUserName } from './faculty.interface';
+import { BloodGroup, Gender } from './faculty.constant';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -28,36 +29,48 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
     },
     name: {
       type: userNameSchema,
-      required: true,
+      required: [true, 'Name is required'],
     },
     gender: {
       type: String,
       enum: {
-        values: ['male', 'female', 'other'],
+        values: Gender,
         message:
           '{VALUE} is not valid. Gender must be either male or female and others.',
       },
       required: [true, 'Gender is required'],
     },
     dateOfBirth: { type: Date },
-    email: { type: String, required: true, unique: true },
-    contactNumberNo: { type: String, required: true },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+    },
+    contactNo: { type: String, required: true },
     emergencyContactNo: { type: String, required: true },
     bloodGroup: {
       type: String,
       enum: {
-        values: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+        values: BloodGroup,
         message: '{VALUE} is not a valid blood group',
       },
     },
-    presentAddress: { type: String, required: true },
-    permanentAddress: { type: String, required: true },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present Address is required!'],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent Address is required!'],
+    },
     academicDepartment: {
       type: Schema.Types.ObjectId,
+      required: [true, 'Academic Department is required'],
       ref: 'AcademicDepartment',
     },
     academicFaculty: {
       type: Schema.Types.ObjectId,
+      required: [true, 'Academic Faculty is required'],
       ref: 'AcademicFaculty',
     },
     designation: {

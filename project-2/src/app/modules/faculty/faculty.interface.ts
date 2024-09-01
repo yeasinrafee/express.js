@@ -1,27 +1,39 @@
-import { Model, Types } from "mongoose";
+import { Model, Types } from 'mongoose';
+
+export type TGender = 'male' | 'female' | 'others';
+
+export type TBloodGroup =
+  | 'A+'
+  | 'A-'
+  | 'B+'
+  | 'B-'
+  | 'AB+'
+  | 'AB-'
+  | 'O+'
+  | 'O-';
 
 export type TUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
+
 export type TFaculty = {
   id: string;
   user: Types.ObjectId;
-  password: string;
+  designation: string;
   name: TUserName;
-  gender: "male" | "female" | "others";
+  gender: TGender;
   dateOfBirth?: Date;
   email: string;
-  contactNumberNo: string;
+  contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
+  bloodGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
+  profileImg?: string;
   academicDepartment: Types.ObjectId;
   academicFaculty: Types.ObjectId;
-  designation: string;
-  profileImg?: string;
   isDeleted: boolean;
 };
 

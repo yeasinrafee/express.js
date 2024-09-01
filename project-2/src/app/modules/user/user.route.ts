@@ -25,7 +25,7 @@ router.post(
 
 router.post(
   '/create-faculty',
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
@@ -37,6 +37,7 @@ router.post(
 
 router.post(
   '/create-admin',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
@@ -48,10 +49,19 @@ router.post(
 
 router.post(
   '/change-status/:id',
-  auth('admin'),
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   checkValidation(UserValidation.changeStatusValidationSchema),
   UserController.changeStatus
 );
 
-router.get('/me', auth('student', 'faculty', 'admin'), UserController.getMe);
+router.get(
+  '/me',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student
+  ),
+  UserController.getMe
+);
 export const UserRouters = router;

@@ -7,19 +7,26 @@ import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-// it'll call controller
-
 router.get(
   '/',
-  auth(USER_ROLE.admin, USER_ROLE.faculty),
+  auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.faculty),
   FacultyController.getAllFaculties
 );
-router.get('/:id', FacultyController.getSingleFaculty);
+router.get(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.faculty),
+  FacultyController.getSingleFaculty
+);
 router.patch(
   '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.faculty),
   checkValidation(FacultyValidations.updateFacultySchemaZod),
   FacultyController.updateFaculty
 );
-router.delete('/:id', FacultyController.deleteFaculty);
+router.delete(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.faculty),
+  FacultyController.deleteFaculty
+);
 
 export const FacultyRoutes = router;
