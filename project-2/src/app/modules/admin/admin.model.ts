@@ -41,7 +41,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     },
     dateOfBirth: { type: Date },
     email: { type: String, required: true, unique: true },
-    contactNumberNo: { type: String, required: true },
+    contactNo: { type: String, required: true },
     emergencyContactNo: { type: String, required: true },
     bloodGroup: {
       type: String,

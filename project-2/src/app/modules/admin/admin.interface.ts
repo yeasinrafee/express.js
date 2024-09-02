@@ -1,4 +1,4 @@
-import { Model, Types } from "mongoose";
+import { Model, Types } from 'mongoose';
 
 export type TUserName = {
   firstName: string;
@@ -11,12 +11,12 @@ export type TAdmin = {
   user: Types.ObjectId;
   password: string;
   name: TUserName;
-  gender: "male" | "female" | "others";
+  gender: 'male' | 'female' | 'others';
   dateOfBirth?: Date;
   email: string;
-  contactNumberNo: string;
+  contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-';
   presentAddress: string;
   permanentAddress: string;
   designation: string;
