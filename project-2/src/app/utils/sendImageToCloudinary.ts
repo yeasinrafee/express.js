@@ -21,7 +21,7 @@ export const sendImageToCloudinary = (
         if (error) {
           reject(error);
         }
-        resolve(result);
+        resolve(result as UploadApiResponse);
         fs.unlink(path, (err) => {
           if (err) {
             console.log(err);
