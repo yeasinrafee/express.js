@@ -137,21 +137,25 @@ const getMyOfferedCoursesFromDB = async (
   userId: string,
   query: Record<string, unknown>
 ) => {
-  // pagination setup
+  //pagination setup
+
   const page = Number(query?.page) || 1;
   const limit = Number(query?.limit) || 10;
   const skip = (page - 1) * limit;
 
   const student = await Student.findOne({ id: userId });
+  // find the student
   if (!student) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+    throw new AppError(httpStatus.NOT_FOUND, 'User is noty found');
   }
 
+  //find current ongoing semester
   const currentOngoingRegistrationSemester = await SemesterRegistration.findOne(
     {
       status: 'ONGOING',
     }
   );
+
   if (!currentOngoingRegistrationSemester) {
     throw new AppError(
       httpStatus.NOT_FOUND,
@@ -238,7 +242,7 @@ const getMyOfferedCoursesFromDB = async (
     },
     {
       $addFields: {
-        completedCourseId: {
+        completedCourseIds: {
           $map: {
             input: '$completedCourses',
             as: 'completed',
@@ -255,14 +259,15 @@ const getMyOfferedCoursesFromDB = async (
             {
               $setIsSubset: [
                 '$course.preRequisiteCourses.course',
-                '$completedCourseId',
+                '$completedCourseIds',
               ],
             },
           ],
         },
+
         isAlreadyEnrolled: {
           $in: [
-            'course._id',
+            '$course._id',
             {
               $map: {
                 input: '$enrolledCourses',
@@ -281,6 +286,7 @@ const getMyOfferedCoursesFromDB = async (
       },
     },
   ];
+
   const paginationQuery = [
     {
       $skip: skip,
@@ -296,6 +302,7 @@ const getMyOfferedCoursesFromDB = async (
   ]);
 
   const total = (await OfferedCourse.aggregate(aggregationQuery)).length;
+
   const totalPage = Math.ceil(result.length / limit);
 
   return {

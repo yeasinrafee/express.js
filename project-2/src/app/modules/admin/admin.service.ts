@@ -1,23 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose from "mongoose";
-import AppError from "../../errors/AppError";
-import httpStatus from "http-status";
-import { User } from "../user/user.model";
-import QueryBuilder from "../../builder/QueryBuilder";
-import { Admin } from "./admin.model";
-import { TAdmin } from "./admin.interface";
-import { AdminSearchableFields } from "./admin.constant";
+import mongoose from 'mongoose';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
+import { User } from '../user/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { Admin } from './admin.model';
+import { TAdmin } from './admin.interface';
+import { AdminSearchableFields } from './admin.constant';
 
 const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
-  const AdminQuery = new QueryBuilder(Admin.find(), query)
+  const adminQuery = new QueryBuilder(Admin.find(), query)
     .search(AdminSearchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
 
-  const result = await AdminQuery.modelQuery;
-  return result;
+  const result = await adminQuery.modelQuery;
+  const meta = await adminQuery.countTotal();
+  return {
+    result,
+    meta,
+  };
 };
 
 const getSingleAdminFromDB = async (id: string) => {
@@ -56,7 +60,7 @@ const deleteAdminFromDB = async (id: string) => {
       { new: true, session }
     );
     if (!deletedAdmin) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete admin");
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete admin');
     }
 
     const userId = deletedAdmin.user;
@@ -67,7 +71,7 @@ const deleteAdminFromDB = async (id: string) => {
       { new: true, session }
     );
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
     }
 
     await session.commitTransaction();

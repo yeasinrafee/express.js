@@ -1,15 +1,17 @@
-import sendResponse from "../../utils/sendResponse";
-import httpStatus from "http-status";
-import catchAsync from "../../utils/catchAsync";
-import { FacultyServices } from "./faculty.service";
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
+import catchAsync from '../../utils/catchAsync';
+import { FacultyServices } from './faculty.service';
 
 const getAllFaculties = catchAsync(async (req, res) => {
   const result = await FacultyServices.getAllFacultiesFromDB(req.query);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Faculties are retrieved successfully",
-    data: result,
+    message: 'Faculties are retrieved successfully',
+    meta: result.meta,
+    data: result.result,
   });
 });
 
@@ -19,7 +21,7 @@ const getSingleFaculty = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Faculty is retrieved successfully",
+    message: 'Faculty is retrieved successfully',
     data: result,
   });
 });
@@ -31,7 +33,7 @@ const updateFaculty = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Faculty is updated successfully",
+    message: 'Faculty is updated successfully',
     data: result,
   });
 });
@@ -42,7 +44,7 @@ const deleteFaculty = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is deleted successfully",
+    message: 'Student is deleted successfully',
     data: result,
   });
 });

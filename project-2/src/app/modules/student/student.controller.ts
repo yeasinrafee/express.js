@@ -1,15 +1,18 @@
-import { StudentServices } from "./student.service";
-import sendResponse from "../../utils/sendResponse";
-import httpStatus from "http-status";
-import catchAsync from "../../utils/catchAsync";
+import { StudentServices } from './student.service';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
+import catchAsync from '../../utils/catchAsync';
+import { RequestHandler } from 'express';
 
-const getAllStudents = catchAsync(async (req, res) => {
+const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB(req.query);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Students are retrieved successfully",
-    data: result,
+    message: 'Student are retrieved successfully',
+    meta: result.meta,
+    data: result.result,
   });
 });
 
@@ -19,7 +22,7 @@ const getSingleStudents = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is retrieved successfully",
+    message: 'Student is retrieved successfully',
     data: result,
   });
 });
@@ -31,7 +34,7 @@ const updateStudent = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is updated successfully",
+    message: 'Student is updated successfully',
     data: result,
   });
 });
@@ -42,7 +45,7 @@ const deleteStudents = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is deleted successfully",
+    message: 'Student is deleted successfully',
     data: result,
   });
 });

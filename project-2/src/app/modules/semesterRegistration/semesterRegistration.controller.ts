@@ -26,11 +26,13 @@ const getAllSemesterRegistrations = catchAsync(
       await SemesterRegistrationService.getAllSemesterRegistrationsFromDB(
         req.query
       );
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Semester Registrations are retrieved successfully!',
-      data: result,
+      message: 'Semester Registration is retrieved successfully !',
+      meta: result.meta,
+      data: result.result,
     });
   }
 );

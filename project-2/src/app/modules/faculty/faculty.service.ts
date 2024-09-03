@@ -1,21 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose from "mongoose";
-import AppError from "../../errors/AppError";
-import httpStatus from "http-status";
-import { User } from "../user/user.model";
-import QueryBuilder from "../../builder/QueryBuilder";
-import { facultySearchableFields } from "./faculty.constant";
-import { Faculty } from "./faculty.model";
-import { TFaculty } from "./faculty.interface";
+import mongoose from 'mongoose';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
+import { User } from '../user/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { facultySearchableFields } from './faculty.constant';
+import { Faculty } from './faculty.model';
+import { TFaculty } from './faculty.interface';
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
-    Faculty.find().populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    }),
+    Faculty.find().populate('academicDepartment academicFaculty'),
     query
   )
     .search(facultySearchableFields)
@@ -25,14 +20,18 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await facultyQuery.modelQuery;
-  return result;
+  const meta = await facultyQuery.countTotal();
+  return {
+    result,
+    meta,
+  };
 };
 
 const getSingleFacultyFromDB = async (id: string) => {
   const result = await Faculty.findById(id).populate({
-    path: "academicDepartment",
+    path: 'academicDepartment',
     populate: {
-      path: "academicFaculty",
+      path: 'academicFaculty',
     },
   });
   return result;
@@ -69,7 +68,7 @@ const deleteFacultyFromDB = async (id: string) => {
       { new: true, session }
     );
     if (!deletedFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete faculty");
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty');
     }
 
     const userId = deletedFaculty.user;
@@ -80,7 +79,7 @@ const deleteFacultyFromDB = async (id: string) => {
       { new: true, session }
     );
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
     }
 
     await session.commitTransaction();
